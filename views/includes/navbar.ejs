@@ -1,0 +1,110 @@
+<nav class="navbar navbar-expand-md bg-white border-bottom sticky-top py-2">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/listings" style="font-size: 1.5rem; font-weight: 700; color: #ff385c;">
+            <i class="fa-brands fa-airbnb" style="font-size: 2rem; margin-right: 0.5rem;"></i>
+            <span class="brand-text">Explore</span>
+        </a>
+        
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav mx-auto align-items-center">
+                <li class="nav-item">
+                    <form class="d-flex search-form" role="search" action="/listings" method="GET">
+                        <div class="search-wrapper d-flex align-items-center">
+                            <input 
+                                class="form-control search-input" 
+                                type="search" 
+                                name="q" 
+                                placeholder="Search destinations..." 
+                                aria-label="Search"
+                            >
+                            <button class="btn search-btn" type="submit">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium px-3 py-2 rounded-pill hover-bg" href="/listings/new">Airbnb your home</a>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <button class="btn dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" style="border-radius: 2rem; border: 1px solid #ddd; padding: 0.5rem 0.75rem; background: white;">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border shadow mt-2" style="border-radius: 0.75rem; min-width: 200px;">
+                        <%if(!currUser){%>
+                            <li><a class="dropdown-item fw-medium py-2" href="/signup">Sign up</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="/login">Log in</a></li>
+                        <%} else {%>
+                            <li><a class="dropdown-item fw-medium py-2" href="/logout">Log out</a></li>
+                        <%}%>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Help Center</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .hover-bg:hover {
+        background-color: #f7f7f7;
+    }
+    .search-form {
+        position: relative;
+    }
+    .search-wrapper {
+        border: 1px solid #ddd;
+        border-radius: 2rem;
+        padding: 0.25rem 0.5rem;
+        transition: box-shadow 0.2s;
+    }
+    .search-wrapper:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .search-input {
+        border: none;
+        border-radius: 2rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        width: 350px;
+        background: transparent;
+    }
+    .search-input:focus {
+        box-shadow: none;
+        outline: none;
+    }
+    .search-btn {
+        background: #ff385c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    .search-btn:hover {
+        background: #d9326f;
+    }
+    .dropdown-item:hover {
+        background: #f7f7f7 !important;
+    }
+    .nav-link:hover {
+        color: #ff385c !important;
+    }
+    @media (max-width: 768px) {
+        .search-input {
+            width: 200px;
+        }
+    }
+</style>
