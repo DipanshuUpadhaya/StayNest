@@ -42,30 +42,28 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-async function main() {
-    try {
-        await mongoose.connect(dbUrl, {
-            family: 4,
-            serverSelectionTimeoutMS: 30000,
-            socketTimeoutMS: 45000,
-        });
+console.log("DB URL being used:", dbUrl);
 
-        console.log("Connected to DB");
+mongoose.connect(dbUrl, {
+    family: 4,
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 45000,
+})
+.then(() => {
+    console.log("Connected to DB");
 
-        app.listen(PORT, () => {
-            console.log(`Server is listening on port ${PORT}`);
-        });
+    app.listen(PORT, () => {
+        console.log(`Server is listening on port ${PORT}`);
+    });
+})
+.catch((err) => {
+    console.log("DB connection failed:", err.message);
 
-    } catch (err) {
-        console.log("DB connection error:");
-        console.log("Message:", err.message);
-        console.log("Code:", err.code);
-        console.log("Reason:", err.reason);
-        console.log(err);
-    }
-}
-
-main();
+    // Prevent crash on Render
+    app.listen(PORT, () => {
+        console.log(`Server running WITHOUT DB on ${PORT}`);
+    });
+});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -85,14 +83,14 @@ const store=MongoStore.create({
     touchAfter:24*3600,
 });
 
-store.on("error",()=>{
+store.on("error",(err)=>{
     console.log("Error in mongo session store",err);
 });
 
 // session options
 const sessionOptions = {
     store:store,
-    secret: process.env.SECRET,
+    secret: secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
