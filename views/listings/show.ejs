@@ -1,4 +1,4 @@
-<%layout("/layouts/boilerplate")%>
+<% layout("/layouts/boilerplate") %>
 
 <div class="container show-container mt-4">
 
@@ -7,8 +7,11 @@
 
     <!-- Card -->
     <div class="card listing-card mb-3">
-        <img src="<%= listing.image?.url || 'https://via.placeholder.com/400' %>" 
-             class="card-img-top show-img">
+        <img 
+            src="<%= listing.image?.url || 'https://via.placeholder.com/400' %>" 
+            class="card-img-top show-img"
+            alt="listing image"
+        >
 
         <div class="card-body">
             <p>Owned by <i><%= listing.owner.username %></i></p>
@@ -29,9 +32,21 @@
     </div>
     <% } %>
 
-    <!-- Map -->
+    <!-- MAP -->
     <h4>Where you'll be</h4>
     <div id="map"></div>
+
+    <!-- Coordinates Script -->
+    <script>
+        const coordinates = <%- JSON.stringify(listing.geometry?.coordinates || [77.2090, 28.6139]) %>;
+        const listingLocation = "<%= listing.location %>";
+    </script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Map Script -->
+    <script src="/js/map.js"></script>
 
     <!-- Review Form -->
     <hr>
@@ -45,19 +60,29 @@
             <fieldset class="starability-slot">
                 <input type="radio" name="review[rating]" value="1" checked />
                 <label>1</label>
+
                 <input type="radio" name="review[rating]" value="2" />
                 <label>2</label>
+
                 <input type="radio" name="review[rating]" value="3" />
                 <label>3</label>
+
                 <input type="radio" name="review[rating]" value="4" />
                 <label>4</label>
+
                 <input type="radio" name="review[rating]" value="5" />
                 <label>5</label>
             </fieldset>
         </div>
 
         <div class="mb-3">
-            <textarea name="review[comment]" class="form-control" rows="4" required></textarea>
+            <textarea 
+                name="review[comment]" 
+                class="form-control" 
+                rows="4" 
+                placeholder="Write your review..." 
+                required
+            ></textarea>
         </div>
 
         <button class="btn btn-outline-dark">Submit</button>
@@ -74,7 +99,9 @@
         <div class="col-12 col-md-6">
             <div class="card review-card">
                 <div class="card-body">
+
                     <h6>@<%= review.author.username %></h6>
+
                     <p class="starability-result" data-rating="<%= review.rating %>"></p>
 
                     <p class="small">
@@ -87,6 +114,7 @@
                     <form action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
                         <button class="btn btn-sm btn-dark">Delete</button>
                     </form>
+
                 </div>
             </div>
         </div>

@@ -1,34 +1,90 @@
+/* Container */
 .show-container {
     max-width: 900px;
     margin: auto;
+    padding: 0 1rem;
 }
 
+/* Image */
 .show-img {
+    width: 100%;
     height: 300px;
     object-fit: cover;
     border-radius: 1rem;
 }
 
+/* Buttons */
 .btns {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
+.btns .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Map */
 #map {
     width: 100%;
-    height: 300px;
+    height: 320px;
     border-radius: 1rem;
     margin: 1rem 0;
 }
 
-/* Mobile */
+/* Review Cards */
+.review-card {
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+/* Fix username wrapping */
+.review-card h6 {
+    word-break: break-word;
+}
+
+/* Text spacing */
+.card-body p {
+    margin-bottom: 0.5rem;
+}
+
+/* ================= MOBILE ================= */
 @media (max-width: 576px) {
+
+    .show-container {
+        padding: 0 0.5rem;
+    }
+
     .show-img {
         height: 200px;
     }
 
     .btns {
         flex-direction: column;
+    }
+
+    .btns .btn {
+        width: 100%;
+    }
+
+    #map {
+        height: 250px;
+    }
+
+    .review-card {
+        padding: 0.8rem;
+    }
+}
+
+/* ================= TABLET ================= */
+@media (max-width: 768px) {
+
+    .show-img {
+        height: 240px;
+    }
+
+    #map {
+        height: 280px;
     }
 }
