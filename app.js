@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const app = express();
 
-// ✅ VERY IMPORTANT (fix for Render cookies)
+//  VERY IMPORTANT (fix for Render cookies)
 app.set("trust proxy", 1);
 
 const mongoose = require("mongoose");
@@ -38,6 +38,13 @@ const PORT = process.env.PORT || 8080;
 const secret = process.env.SECRET || "mysupersecretcode";
 
 console.log("DB URL being used:", dbUrl);
+
+const Listing = require("./models/listing");
+
+app.get("/", async (req, res) => {
+    const listings = await Listing.find({});
+    res.render("home.ejs", { listings });
+});
 
 // ================= DB CONNECTION =================
 mongoose.connect(dbUrl, {
