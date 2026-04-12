@@ -99,7 +99,23 @@ module.exports.createListing=async(req,res,next)=>{
       }
     );
 
-    const data = await geoRes.json();
+    // const data = await geoRes.json();
+    let data;
+
+try {
+  const text = await geoRes.text();   // read as text first
+
+  try {
+    data = JSON.parse(text);          // try parsing JSON
+  } catch (e) {
+    console.log("Geo API returned NON-JSON:", text);
+    data = [];
+  }
+
+} catch (err) {
+  console.log("Fetch error:", err);
+  data = [];
+}
     
     if (data.length > 0) {
       newListing.geometry = {
