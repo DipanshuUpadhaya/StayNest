@@ -55,25 +55,31 @@
 
     <form action="/listings/<%=listing._id%>/reviews" method="POST" class="needs-validation">
 
-        <div class="mb-3">
-            <label class="form-label">Rating</label>
-            <fieldset class="starability-slot">
-                <input type="radio" name="review[rating]" value="1" checked />
-                <label>1</label>
+    <div class="mb-3">
+  <label class="form-label">Rating</label>
 
-                <input type="radio" name="review[rating]" value="2" />
-                <label>2</label>
+  <fieldset class="starability-slot">
 
-                <input type="radio" name="review[rating]" value="3" />
-                <label>3</label>
+    <!-- Hidden default (no selection) -->
+    <input type="radio" name="review[rating]" value="" checked hidden />
 
-                <input type="radio" name="review[rating]" value="4" />
-                <label>4</label>
+    <input type="radio" id="rate1" name="review[rating]" value="1" />
+    <label for="rate1">1 star</label>
 
-                <input type="radio" name="review[rating]" value="5" />
-                <label>5</label>
-            </fieldset>
-        </div>
+    <input type="radio" id="rate2" name="review[rating]" value="2" />
+    <label for="rate2">2 stars</label>
+
+    <input type="radio" id="rate3" name="review[rating]" value="3" />
+    <label for="rate3">3 stars</label>
+
+    <input type="radio" id="rate4" name="review[rating]" value="4" />
+    <label for="rate4">4 stars</label>
+
+    <input type="radio" id="rate5" name="review[rating]" value="5" />
+    <label for="rate5">5 stars</label>
+
+  </fieldset>
+</div>
 
         <div class="mb-3">
             <textarea 
