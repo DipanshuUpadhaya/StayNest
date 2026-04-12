@@ -4,18 +4,30 @@ module.exports.renderSignupForm=(req,res)=>{
     res.render("users/signup.ejs");
 };
 
-module.exports.signup=async(req,res)=>{
-    try{
-        let {username,email,password}=req.body;
-        const newUser=new User({email,username});
-        const registerUser=await User.register(newUser,password);
-        console.log(registerUser);
-        req.flash("success","Welcome to Wanderlust!");
-        res.redirect("/listings");
-    }catch(e){
-        req.flash("error",e.message);
+module.exports.signup = async (req, res, next) => {
+    try {
+        let { username, email, password } = req.body;
+
+        const newUser = new User({ email, username });
+        const registerUser = await User.register(newUser, password);
+
+        req.flash("success", "Welcome to Wanderlust!");
+
+        //  AUTO LOGIN AFTER SIGNUP
+        req.login(registerUser, (err) => {
+            if (err) {
+                return next(err);
+            }
+
+            //  REDIRECT TO ORIGINAL PAGE
+            let redirectUrl = req.session.redirectUrl || "/listings";
+            res.redirect(redirectUrl);
+        });
+
+    } catch (e) {
+        req.flash("error", e.message);
         res.redirect("/signup");
-    };
+    }
 };
 
 
