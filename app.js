@@ -1,6 +1,6 @@
 const dns = require("node:dns");
 
-// (Optional) DNS fix
+// DNS Fix (optional)
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 dns.setDefaultResultOrder("ipv4first");
 
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const app = express();
 
-//  VERY IMPORTANT (fix for Render cookies)
+// Fix for Render cookies
 app.set("trust proxy", 1);
 
 const mongoose = require("mongoose");
@@ -33,39 +33,14 @@ const User = require("./models/user.js");
 
 const { listingSchema, reviewSchema } = require("./schema.js");
 
+const Listing = require("./models/listing");
+
+// ENV
 const dbUrl = process.env.ATLASDB_URL;
 const PORT = process.env.PORT || 8080;
 const secret = process.env.SECRET || "mysupersecretcode";
 
-console.log("DB URL being used:", dbUrl);
-
-const Listing = require("./models/listing");
-
-app.get("/", async (req, res) => {
-    const listings = await Listing.find({});
-    res.render("home.ejs", { listings });
-});
-
-// ================= DB CONNECTION =================
-mongoose.connect(dbUrl, {
-    family: 4,
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 45000,
-})
-.then(() => {
-    console.log("Connected to DB");
-
-    app.listen(PORT, () => {
-        console.log(`Server is listening on port ${PORT}`);
-    });
-})
-.catch((err) => {
-    console.log("DB connection failed:", err.message);
-
-    app.listen(PORT, () => {
-        console.log(`Server running WITHOUT DB on ${PORT}`);
-    });
-});
+console.log("DB URL:", dbUrl);
 
 // ================= EXPRESS SETUP =================
 app.set("view engine", "ejs");
@@ -78,6 +53,27 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
+// ================= DB CONNECTION =================
+mongoose.connect(dbUrl, {
+    family: 4,
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 45000,
+})
+.then(() => {
+    console.log("Connected to DB");
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+})
+.catch((err) => {
+    console.log("DB connection failed:", err.message);
+
+    app.listen(PORT, () => {
+        console.log(`Server running WITHOUT DB on ${PORT}`);
+    });
+});
+
 // ================= SESSION STORE =================
 const store = MongoStore.create({
     mongoUrl: dbUrl,
@@ -88,7 +84,7 @@ const store = MongoStore.create({
 });
 
 store.on("error", (err) => {
-    console.log("Error in mongo session store", err);
+    console.log("Session store error:", err);
 });
 
 // ================= SESSION CONFIG =================
@@ -101,8 +97,8 @@ const sessionOptions = {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,        // ✅ IMPORTANT for Render (HTTPS)
-        sameSite: "lax",     // ✅ prevents cookie issues
+        secure: process.env.NODE_ENV === "production", // FIXED
+        sameSite: "lax",
     }
 };
 
@@ -131,9 +127,8 @@ const validateListing = (req, res, next) => {
     if (error) {
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, errMsg);
-    } else {
-        next();
     }
+    next();
 };
 
 const validateReview = (req, res, next) => {
@@ -141,10 +136,20 @@ const validateReview = (req, res, next) => {
     if (error) {
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, errMsg);
-    } else {
-        next();
     }
+    next();
 };
+
+// ================= HOMEPAGE ROUTE (FIXED POSITION) =================
+app.get("/", async (req, res) => {
+    try {
+        const listings = await Listing.find({});
+        res.render("home.ejs", { listings });
+    } catch (err) {
+        console.log("Homepage error:", err);
+        res.status(500).send("Error loading homepage");
+    }
+});
 
 // ================= ROUTES =================
 const listingRouter = require("./routes/listing.js");
