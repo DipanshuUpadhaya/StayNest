@@ -140,15 +140,10 @@ const validateReview = (req, res, next) => {
     next();
 };
 
-// ================= HOMEPAGE ROUTE (FIXED POSITION) =================
-app.get("/", async (req, res) => {
-    try {
-        const listings = await Listing.find({});
-        res.render("home.ejs", { listings });
-    } catch (err) {
-        console.log("Homepage error:", err);
-        res.status(500).send("Error loading homepage");
-    }
+
+
+app.get("/", (req, res) => {
+    res.redirect("/listings");
 });
 
 // ================= ROUTES =================
